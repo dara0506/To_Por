@@ -1,0 +1,193 @@
+<p class="letter-paragraph fade-in">Hello Por,</p>
+      
+      <p class="letter-paragraph fade-in">I know this is kind of awkward, and I hope you don’t hate me for saying all of this.</p>
+      
+      <p class="letter-paragraph fade-in">I honestly don’t know why, but ever since we broke up, I still think about you a lot. You’ve been on my mind more than I’d like to admit.</p>
+      
+      <p class="letter-paragraph fade-in">I keep dreaming about you, and I still miss you so much, por.</p>
+      
+      <p class="letter-paragraph fade-in">I miss the old days, the little things we used to do, and just us being us.</p>
+      
+      <p class="letter-paragraph fade-in">Maybe I should be moving on by now, but I guess a part of me is still holding on to what we had.</p>
+      
+      <p class="letter-paragraph fade-in">Sometimes when I think about everything, I can’t hold back my tears.</p>
+      
+      <p class="letter-paragraph fade-in">I’m not saying this to make you feel bad or to ask you to come back. I just wanted to be honest with you about how I feel.</p>
+      
+      <p class="letter-paragraph fade-in">No matter how much time passes, you still mean a lot to me.</p>
+      
+      <p class="letter-paragraph fade-in">I really loved you, por… and honestly, I think a part of me still does.</p>
+      
+      <p class="letter-paragraph fade-in">I hope you’re doing okay and that you’re happy, even if I’m no longer part of your life.</p>
+      
+      <p class="letter-paragraph fade-in">I just wanted you to know that I still miss you… and I miss us. ❤️‍🩹</p>
+
+      <p class="letter-paragraph letter-signature fade-in">From the boy who once and alway loved you the most…</p>
+    </section>
+
+    <!-- CLOSING SECTION -->
+    <section class="final-section">
+      <p class="take-care fade-in">Take care of yourself, Por. ❤️‍🩹</p>
+      <p class="footer-note fade-in">— From someone who still remembers</p>
+    </section>
+
+  </div>
+
+  <!-- ELEGANT FLOATING MUSIC PLAYER -->
+  <div id="music-player">
+    <button class="music-btn" id="toggle-music" aria-label="Toggle music">
+      <svg id="icon-pause" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+      <svg id="icon-play" viewBox="0 0 24 24" style="display:none;"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="sound-bars playing" id="sound-bars">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+  </div>
+
+  <!-- AUDIO ELEMENT (Audio file location: /assets/background.mp3) -->
+  <audio id="bg-music" loop preload="auto">
+    <source src="/assets/background.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    /* FLOATING PARTICLES CANVAS */
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+
+    let particles = [];
+    const particleCount = 45;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+      constructor() {
+        this.reset();
+      }
+
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 1.4 + 0.4;
+        this.alpha = Math.random() * 0.45 + 0.1;
+        this.speedY = -(Math.random() * 0.18 + 0.04);
+        this.speedX = (Math.random() - 0.5) * 0.08;
+      }
+
+      update() {
+        this.y += this.speedY;
+        this.x += this.speedX;
+
+        if (this.y < 0) {
+          this.y = canvas.height;
+          this.x = Math.random() * canvas.width;
+        }
+      }
+
+      draw() {
+        ctx.fillStyle = `rgba(226, 232, 240, ${this.alpha})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < particleCount; i++) {
+      particles.push(new Particle());
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    /* AUDIO MANAGEMENT */
+    const audio = document.getElementById('bg-music');
+    const musicPlayer = document.getElementById('music-player');
+    const toggleBtn = document.getElementById('toggle-music');
+    const iconPlay = document.getElementById('icon-play');
+    const iconPause = document.getElementById('icon-pause');
+    const soundBars = document.getElementById('sound-bars');
+
+    audio.volume = 0.55; // Set volume between 50-60%
+
+    function playAudio() {
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          showPauseIcon();
+        }).catch(() => {
+          showPlayIcon();
+        });
+      }
+    }
+
+    function showPauseIcon() {
+      iconPause.style.display = 'block';
+      iconPlay.style.display = 'none';
+      soundBars.classList.add('playing');
+    }
+
+    function showPlayIcon() {
+      iconPause.style.display = 'none';
+      iconPlay.style.display = 'block';
+      soundBars.classList.remove('playing');
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        audio.play();
+        showPauseIcon();
+      } else {
+        audio.pause();
+        showPlayIcon();
+      }
+    });
+
+    /* INTRO TRANSITION */
+    const openBtn = document.getElementById('open-btn');
+    const introScreen = document.getElementById('intro-screen');
+    const mainWrapper = document.getElementById('main-wrapper');
+
+    openBtn.addEventListener('click', () => {
+      introScreen.classList.add('hidden');
+      mainWrapper.classList.add('visible');
+      musicPlayer.classList.add('active');
+      
+      // Start music upon explicit user interaction
+      playAudio();
+
+      // Trigger scroll check after transition
+      setTimeout(checkScroll, 300);
+    });
+
+    /* SCROLL REVEAL ANIMATION */
+    const fadeElements = document.querySelectorAll('.fade-in');
+
+    function checkScroll() {
+      const triggerBottom = window.innerHeight * 0.88;
+
+      fadeElements.forEach(el => {
+        const top = el.getBoundingClientRect().top;
+        if (top < triggerBottom) {
+          el.classList.add('visible');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', checkScroll);
+  </script>
+</body>
+</html>
